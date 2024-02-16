@@ -1,0 +1,72 @@
+package Login;
+
+import org.openqa.selenium.chrome.ChromeDriver;
+
+import java.io.FileInputStream;
+import java.util.concurrent.TimeUnit;
+
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+public class OrangehrmLogin {
+	static {
+		System.setProperty("webdriver.chrome.driver","C:\\WebDrivers\\chromedriver.exe");
+	}
+	
+	public static void main(String[] args) throws InterruptedException
+	{
+//		System.setProperty("webdriver.chrome.driver","C:\\WebDrivers\\chromedriver.exe");
+		WebDriver driver = new ChromeDriver();
+		driver.manage().window().maximize();
+		driver.manage().timeouts().pageLoadTimeout(10, TimeUnit.SECONDS);
+		
+		driver.get("https://opensource-demo.orangehrmlive.com/");
+		try {
+			FileInputStream fis = new FileInputStream("C:\\Users\\Admin\\Downloads\\Details.xlsx");
+			Workbook workbook  = WorkbookFactory.create(fis);
+			Sheet sheet = workbook.getSheetAt(0);
+			
+			Row row = sheet.getRow(0);
+			Cell usernamecell = row.getCell(0);
+			Cell passwordcell = row.getCell(1);
+			
+			 String username = usernamecell.getStringCellValue();
+	            String password = passwordcell.getStringCellValue();
+	            
+	         // Enter username
+	            WebElement usernameField = driver.findElement(By.className("//input[contains(@class, 'oxd-input')][@name='username']"));
+	            usernameField.sendKeys(username);
+
+	            // Enter password
+	            WebElement passwordField = driver.findElement(By.className("//input[contains(@class, 'oxd-input')][@name='password']"));
+	            passwordField.sendKeys(password);
+
+	            // Click on login button
+	            WebElement loginButton = driver.findElement(By.className("//button[contains(@class, 'orangehrm-login-button')]"));
+	            loginButton.click();
+	            
+	            
+	            System.out.println("Logged in Successfully");
+	            
+	            workbook.close();
+	            fis.close();
+
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+		driver.wait();
+	}
+}	
+
+	
+
+
+
+		

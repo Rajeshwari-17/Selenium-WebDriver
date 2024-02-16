@@ -1,0 +1,181 @@
+/*package Login;
+
+import org.openqa.selenium.chrome.ChromeDriver;
+
+import java.io.FileInputStream;
+import java.util.concurrent.TimeUnit;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+public class OrangehrmLogin {
+	static {
+		System.setProperty("webdriver.chrome.driver","C:\\WebDrivers\\chromedriver.exe");
+	}
+	
+	public static void main(String[] args) 
+	{
+//		System.setProperty("webdriver.chrome.driver","C:\\WebDrivers\\chromedriver.exe");
+		WebDriver driver = new ChromeDriver();
+		driver.get("https://opensource-demo.orangehrmlive.com");
+		driver.manage().window().maximize();
+//		driver.manage().timeouts().pageLoadTimeout(10, TimeUnit.SECONDS);
+		driver.quit();
+	}
+	
+	public void login () {
+		
+		
+	}
+	
+	public void addJobTitle() {
+		
+	}
+}	
+*/
+
+package Login;
+
+import java.time.Duration;
+import java.util.logging.Logger;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+class BasePage {
+
+	protected WebDriver driver;
+	protected WebDriverWait wait;
+
+	public BasePage(WebDriver driver) {
+		this.driver = driver;
+		this.wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+	}
+
+	public void login() {
+
+		final Logger log = Logger.getLogger(TestLogin.class.getName());
+		driver.get("https://opensource-demo.orangehrmlive.com/web/index.php/auth/login");
+		driver.manage().window().maximize();
+
+		String username = "Admin";
+		String password = "admin123";
+
+		WebElement usernameField = wait.until(ExpectedConditions
+				.presenceOfElementLocated(By.xpath("//input[contains(@class, 'oxd-input')][@name='username']")));
+		WebElement passwordField = wait.until(ExpectedConditions
+				.presenceOfElementLocated(By.xpath("//input[contains(@class, 'oxd-input')][@name='password']")));
+		WebElement loginButton = wait.until(ExpectedConditions
+				.elementToBeClickable(By.xpath("//button[contains(@class, 'orangehrm-login-button')]")));
+
+		usernameField.sendKeys(username);
+		passwordField.sendKeys(password);
+		loginButton.click();
+
+		log.info("Successfully logged in.");
+	}
+
+	public void navigateToUrl(String url) {
+		driver.get(url);
+	}
+}
+
+class AddJobTitlePage extends BasePage {
+
+	private static final Logger log = Logger.getLogger(AddJobTitlePage.class.getName());
+
+	public AddJobTitlePage(WebDriver driver) {
+		super(driver);
+	}
+
+	public void navigateToJobTitlesPage() {
+		navigateToUrl("https://opensource-demo.orangehrmlive.com/web/index.php/admin/viewJobTitleList");
+		log.info("Navigated to the Job Titles page.");
+	}
+
+	public void addJobTitle(String title, String description) {
+		WebElement addButton = wait.until(ExpectedConditions.elementToBeClickable(By.id("btnAdd")));
+		addButton.click();
+
+		WebElement jobTitleField = wait.until(ExpectedConditions.presenceOfElementLocated(By.id("jobTitleName")));
+		WebElement jobDescriptionField = wait
+				.until(ExpectedConditions.presenceOfElementLocated(By.id("jobDescription")));
+
+		jobTitleField.sendKeys(title);
+		jobDescriptionField.sendKeys(description);
+
+		WebElement saveButton = wait.until(ExpectedConditions.elementToBeClickable(By.id("btnSave")));
+		saveButton.click();
+
+		log.info("Job Title added successfully.");
+	}
+}
+
+class DashboardPage extends BasePage {
+
+	private static final Logger log = Logger.getLogger(DashboardPage.class.getName());
+
+	public DashboardPage(WebDriver driver) {
+		super(driver);
+	}
+
+	@Override
+	public void navigateToUrl(String url) {
+		// Additional logic or customization for navigating to Dashboard
+		super.navigateToUrl(url);
+	}
+
+	public void navigateToJobTitlesPage() {
+		// Implement specific navigation to Job Titles page from Dashboard
+		WebElement dashboardLink = wait.until(ExpectedConditions.elementToBeClickable(By.id("dashboardLink")));
+		dashboardLink.click();
+		log.info("Navigated to the Job Titles page from Dashboard.");
+	}
+
+	// Additional methods specific to the Dashboard page
+}
+
+public class OrangehrmLogin {
+	private static final Logger log = Logger.getLogger(OrangehrmLogin.class.getName());
+
+	public static void main(String[] args) {
+		System.setProperty("webdriver.chrome.driver", "C:\\webdriver\\chromedriver.exe");
+
+		WebDriver driver = new ChromeDriver();
+
+		// Specify the URLs manually
+		String loginUrl = "https://opensource-demo.orangehrmlive.com/web/index.php/auth/login";
+		String jobTitlesPageUrl = "https://opensource-demo.orangehrmlive.com/web/index.php/admin/viewJobTitleList";
+		String dashboardPageUrl = "https://opensource-demo.orangehrmlive.com/web/index.php/dashboard";
+
+		// Create instances of AddJobTitlePage and DashboardPage classes
+		AddJobTitlePage addJobTitlePage = new AddJobTitlePage(driver);
+		DashboardPage dashboardPage = new DashboardPage(driver);
+
+		// Login and navigate to Job Titles page
+		addJobTitlePage.navigateToUrl(loginUrl);
+		addJobTitlePage.login();
+		addJobTitlePage.navigateToJobTitlesPage();
+
+		// Add a new job title
+		addJobTitlePage.addJobTitle("Software Engineer", "Develops software solutions");
+
+		// Login and navigate to Job Titles page from Dashboard
+		dashboardPage.navigateToUrl(loginUrl);
+		dashboardPage.login();
+		dashboardPage.navigateToUrl(dashboardPageUrl);
+		dashboardPage.navigateToJobTitlesPage();
+
+		// You can add more navigation steps as needed
+
+		driver.quit();
+	}
+}
+	
+
+
+
+		

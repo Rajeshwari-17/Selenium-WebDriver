@@ -1,0 +1,77 @@
+package Login;
+
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+import java.io.File;
+
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.time.Duration;
+import java.util.concurrent.TimeUnit;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+public class OrangehrmLogin {
+	static {
+		System.setProperty("webdriver.chrome.driver","C:\\WebDrivers\\chromedriver.exe");
+	}
+	
+	public static void main(String[] args) throws InterruptedException 
+	{
+//		System.setProperty("webdriver.chrome.driver","C:\\WebDrivers\\chromedriver.exe");
+		WebDriver driver = new ChromeDriver();
+		driver.get("https://opensource-demo.orangehrmlive.com");
+		driver.manage().window().maximize();
+//		driver.manage().timeouts().pageLoadTimeout(10, TimeUnit.SECONDS);
+		 login(driver);
+		driver.wait();
+	}
+	
+	
+	
+	
+	private static void login(WebDriver driver) {
+		// TODO Auto-generated method stub
+		 String excelFilePath = "C:\\Users\\Admin\\Downloads\\Details.xlsx";
+	        FileInputStream fileInputStream;
+	        try {
+	            fileInputStream = new FileInputStream(new File(excelFilePath));
+	            XSSFWorkbook workbook = new XSSFWorkbook(fileInputStream);
+	            XSSFSheet sheet = workbook.getSheetAt(0); // Assuming login details are in the first sheet
+
+	            // Assuming username is in cell A1 and password is in cell B1
+	            String username = sheet.getRow(0).getCell(0).getStringCellValue();
+	            String password = sheet.getRow(0).getCell(1).getStringCellValue();
+                
+	            
+	            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+
+	            WebElement usernameField = wait.until(ExpectedConditions
+	    				.presenceOfElementLocated(By.xpath("//input[contains(@class, 'oxd-input')][@name='username']")));
+	    		WebElement passwordField = wait.until(ExpectedConditions
+	    				.presenceOfElementLocated(By.xpath("//input[contains(@class, 'oxd-input')][@name='password']")));
+	    		WebElement loginButton = wait.until(ExpectedConditions
+	    				.elementToBeClickable(By.xpath("//button[contains(@class, 'orangehrm-login-button')]")));
+
+	    		usernameField.sendKeys(username);
+	    		passwordField.sendKeys(password);
+	    		loginButton.click();
+
+	            
+
+	            fileInputStream.close();
+	        } catch (IOException e) {
+	            e.printStackTrace();
+	        }
+		
+	}
+
+	
+}	
+
+
+		

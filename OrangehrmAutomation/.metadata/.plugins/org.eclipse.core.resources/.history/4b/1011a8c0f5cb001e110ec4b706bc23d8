@@ -1,0 +1,70 @@
+package Login;
+
+import org.openqa.selenium.chrome.ChromeDriver;
+
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.concurrent.TimeUnit;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+public class OrangehrmLogin {
+	static {
+		System.setProperty("webdriver.chrome.driver","C:\\WebDrivers\\chromedriver.exe");
+	}
+	
+	public static void main(String[] args) 
+	{
+//		System.setProperty("webdriver.chrome.driver","C:\\WebDrivers\\chromedriver.exe");
+		WebDriver driver = new ChromeDriver();
+		driver.get("https://opensource-demo.orangehrmlive.com");
+		driver.manage().window().maximize();
+//		driver.manage().timeouts().pageLoadTimeout(10, TimeUnit.SECONDS);
+		 login(driver);
+		driver.quit();
+	}
+	
+	private static void login(WebDriver driver) {
+		// TODO Auto-generated method stub
+		 String excelFilePath = "C:\\Users\\Admin\\Downloads\\Details.xlsx";
+	        FileInputStream fileInputStream;
+	        try {
+	            fileInputStream = new FileInputStream(new File(excelFilePath));
+	            XSSFWorkbook workbook = new XSSFWorkbook(fileInputStream);
+	            XSSFSheet sheet = workbook.getSheetAt(0); // Assuming login details are in the first sheet
+
+	            // Assuming username is in cell A1 and password is in cell B1
+	            String username = sheet.getRow(0).getCell(0).getStringCellValue();
+	            String password = sheet.getRow(0).getCell(1).getStringCellValue();
+
+	            
+	            
+	             WebElement usernameField = driver.findElement(By.id("username"));
+	            WebElement passwordField = driver.findElement(By.id("password"));
+	            WebElement loginButton = driver.findElement(By.id("loginButton"));
+	            usernameField.sendKeys(username);
+	            passwordField.sendKeys(password);
+	            loginButton.click();
+
+	            workbook.close();
+	            fileInputStream.close();
+	        } catch (IOException e) {
+	            e.printStackTrace();
+	        }
+		
+	}
+
+	public void login () {
+		
+		
+	}
+	
+	public void addJobTitle() {
+		
+	}
+}	
+
+
+		
